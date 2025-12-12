@@ -7,14 +7,35 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <link rel="stylesheet" href="assets/bootstrap-5.3.8-dist/css/bootstrap.min.css">
+    <style>
+        .loader {
+            display: none;
+            opacity: 0;
+        }
+
+        .register-form:has(.htmx-swapping),
+        .register-form.htmx-request {
+            opacity: .5;
+            pointer-events: none;
+        }
+
+        .register-form:has(.htmx-swapping) .loader,
+        .register-form.htmx-request .loader {
+            display: inline-block;
+            opacity: 1;
+        }
+    </style>
 </head>
 <body>
 
 <div class="container my-3">
 
-    <h1>Hello, world! <?= time() ?></h1>
-
-    <form hx-put="server.php">
+    <form
+            class="register-form"
+            hx-post="server.php"
+            hx-swap="innerHTML transition:true swap:1s"
+            hx-target="#res"
+    >
 
         <div class="mb-3">
             <label for="name" class="form-label">Name</label>
@@ -31,7 +52,12 @@
             <input name="phone" type="tel" class="form-control" id="phone" placeholder="Phone">
         </div>
 
-        <button class="btn btn-primary" type="submit">Send</button>
+        <button class="btn btn-primary mb-3" type="submit">
+            Send
+            <span class="loader spinner-border spinner-border-sm" aria-hidden="true"></span>
+        </button>
+
+        <div id="res"></div>
 
     </form>
 

@@ -1,7 +1,11 @@
 <?php
-
+sleep(5);
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    echo '<pre>POST: ' . print_r($_POST, 1) . '</pre>';
+    echo "<div class='alert alert-success' role='alert'>
+        Name: {$_POST['name']}<br>
+        Email: {$_POST['email']}<br>
+        Phone: {$_POST['phone']}<br>
+    </div>";
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
