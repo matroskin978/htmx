@@ -32,9 +32,6 @@
 
     <form
             class="register-form"
-            hx-post="server.php"
-            hx-swap="innerHTML transition:true swap:1s"
-            hx-target="#res"
     >
 
         <div class="mb-3">
@@ -52,14 +49,38 @@
             <input name="phone" type="tel" class="form-control" id="phone" placeholder="Phone">
         </div>
 
-        <button class="btn btn-primary mb-3" type="submit">
-            Send
+        <button
+                class="btn btn-primary mb-3"
+                type="submit"
+                hx-get="server.php"
+                hx-params="name, phone, token"
+                hx-include="closest form, [name='token']"
+                hx-swap="innerHTML transition:true swap:1s"
+                hx-target="#res"
+        >
+            Name, Phone
+            <span class="loader spinner-border spinner-border-sm" aria-hidden="true"></span>
+        </button>
+
+        <button
+                class="btn btn-primary mb-3"
+                type="submit"
+                hx-post="server.php"
+                hx-params="email, phone, token, city, dt"
+                hx-include="[name='token']"
+                hx-vals='js:{"city": "NY", "dt": Math.floor(Date.now() / 1000)}'
+                hx-swap="innerHTML transition:true swap:1s"
+                hx-target="#res"
+        >
+            Email, Phone
             <span class="loader spinner-border spinner-border-sm" aria-hidden="true"></span>
         </button>
 
         <div id="res"></div>
 
     </form>
+
+    <input type="hidden" name="token" value="1234567890">
 
 </div>
 
