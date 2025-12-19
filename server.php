@@ -1,24 +1,28 @@
 <?php
-//sleep(5);
+//sleep(2);
+require __DIR__ . '/db.php';
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (!empty($_POST['dt'])) {
-        echo "DT: " . date("Y-m-d H:i:s", $_POST['dt']);
+    if (empty($_POST['name']) || empty($_POST['email']) || empty($_POST['phone'])) {
+        echo "<div class='alert alert-danger' role='alert'>Fill in required fields</div>";
+    } else {
+        if (add_user()) {
+            echo "<div class='alert alert-success' role='alert'>Success</div>";
+        } else {
+            echo "<div class='alert alert-danger' role='alert'>Something wrong...</div>";
+        }
     }
-    echo '<pre>POST: ' . print_r($_POST, 1) . '</pre>';
-    /*echo "<div class='alert alert-success' role='alert'>
-        Name: {$_POST['name']}<br>
-        Email: {$_POST['email']}<br>
-        Phone: {$_POST['phone']}<br>
-    </div>";*/
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-    echo '<pre>GET: ' . print_r($_GET, 1) . '</pre>';
+function add_user(): bool
+{
+    global $db;
+    try {
+        $stmt = $db->prepare("INSERT INTO workers (name, email, phone) VALUES (?, ?, ?)");
+        $stmt->execute([$_POST['name'], $_POST['email'], $_POST['phone']]);
+        return true;
+    } catch (PDOException $e) {
+        file_put_contents("errors.log", $e->getMessage() . PHP_EOL, FILE_APPEND);
+        return false;
+    }
 }
-
-if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
-    $data = file_get_contents('php://input');
-    parse_str($data, $output);
-    echo '<pre>PUT: ' . print_r($output, 1) . '</pre>';
-}
-

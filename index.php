@@ -32,7 +32,15 @@
 
     <form
             class="register-form"
+            hx-post="server.php"
+            hx-swap="swap:500ms transition:true"
+            hx-target="#res"
     >
+
+        <!--
+            hx-on::before-request="document.getElementById('res').innerHTML = ''"
+            hx-on::after-request="document.querySelector('.register-form').reset()"
+        -->
 
         <div class="mb-3">
             <label for="name" class="form-label">Name</label>
@@ -49,30 +57,8 @@
             <input name="phone" type="tel" class="form-control" id="phone" placeholder="Phone">
         </div>
 
-        <button
-                class="btn btn-primary mb-3"
-                type="submit"
-                hx-get="server.php"
-                hx-params="name, phone, token"
-                hx-include="closest form, [name='token']"
-                hx-swap="innerHTML transition:true swap:1s"
-                hx-target="#res"
-        >
-            Name, Phone
-            <span class="loader spinner-border spinner-border-sm" aria-hidden="true"></span>
-        </button>
-
-        <button
-                class="btn btn-primary mb-3"
-                type="submit"
-                hx-post="server.php"
-                hx-params="email, phone, token, city, dt"
-                hx-include="[name='token']"
-                hx-vals='js:{"city": "NY", "dt": Math.floor(Date.now() / 1000)}'
-                hx-swap="innerHTML transition:true swap:1s"
-                hx-target="#res"
-        >
-            Email, Phone
+        <button class="btn btn-primary mb-3" type="submit">
+            Save
             <span class="loader spinner-border spinner-border-sm" aria-hidden="true"></span>
         </button>
 
@@ -80,11 +66,22 @@
 
     </form>
 
-    <input type="hidden" name="token" value="1234567890">
-
 </div>
 
 <script src="assets/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
 <script src="assets/htmx.min.js"></script>
+<script>
+    document.addEventListener('htmx:beforeRequest', function (e) {
+        console.log(e);
+        // document.getElementById('res').innerHTML = '';
+        e.detail.target.innerHTML = '';
+    });
+    document.addEventListener('htmx:afterRequest', function (e) {
+        console.log(e);
+        // document.querySelector('.register-form').reset();
+        e.target.reset();
+        // e.detail.target.innerHTML = e.detail.xhr.response;
+    });
+</script>
 </body>
 </html>
