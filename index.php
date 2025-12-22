@@ -24,54 +24,81 @@
             display: inline-block;
             opacity: 1;
         }
+
+        .htmx-indicator {
+            display: none;
+        }
+        .htmx-indicator.htmx-request {
+            display: block;
+        }
     </style>
 </head>
 <body>
 
 <div class="container my-3">
 
-    <form
-            class="register-form"
-            hx-post="server.php"
-            hx-swap="swap:500ms transition:true"
-            hx-target="#res"
-    >
+    <div class="row">
+        <div class="col-md-6">
+            <form
+                    class="register-form"
+                    hx-post="server.php"
+                    hx-swap="transition:true"
+                    hx-target=".users-table"
+                    hx-on::before-request="document.getElementById('res').innerHTML = ''"
+                    hx-on::after-request="document.querySelector('.register-form').reset()"
+            >
 
-        <!--
-            hx-on::before-request="document.getElementById('res').innerHTML = ''"
-            hx-on::after-request="document.querySelector('.register-form').reset()"
-        -->
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input name="name" type="text" class="form-control" id="name" placeholder="Name">
+                </div>
 
-        <div class="mb-3">
-            <label for="name" class="form-label">Name</label>
-            <input name="name" type="text" class="form-control" id="name" placeholder="Name">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input name="email" type="email" class="form-control" id="email" placeholder="Email">
+                </div>
+
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input name="phone" type="tel" class="form-control" id="phone" placeholder="Phone">
+                </div>
+
+                <button class="btn btn-primary mb-3" type="submit">
+                    Save
+                </button>
+
+                <div class="htmx-indicator">
+                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                </div>
+
+                <div id="res"></div>
+
+            </form>
         </div>
 
-        <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input name="email" type="email" class="form-control" id="email" placeholder="Email">
+        <div class="col-md-6">
+            <div class="htmx-indicator" id="load-users">
+                <span class="spinner-border" aria-hidden="true"></span>
+            </div>
+            <div
+                    class="table-responsive users-table"
+                    hx-trigger="load"
+                    hx-indicator="#load-users"
+                    hx-get="server.php"
+                    hx-vals='{"action": "get-users"}'
+                    hx-swap="transition:true"
+            >
+
+            </div>
         </div>
-
-        <div class="mb-3">
-            <label for="phone" class="form-label">Phone</label>
-            <input name="phone" type="tel" class="form-control" id="phone" placeholder="Phone">
-        </div>
-
-        <button class="btn btn-primary mb-3" type="submit">
-            Save
-            <span class="loader spinner-border spinner-border-sm" aria-hidden="true"></span>
-        </button>
-
-        <div id="res"></div>
-
-    </form>
+    </div>
 
 </div>
 
 <script src="assets/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
 <script src="assets/htmx.min.js"></script>
 <script>
-    document.addEventListener('htmx:beforeRequest', function (e) {
+    /*document.addEventListener('htmx:beforeRequest', function (e) {
         console.log(e);
         // document.getElementById('res').innerHTML = '';
         e.detail.target.innerHTML = '';
@@ -81,7 +108,7 @@
         // document.querySelector('.register-form').reset();
         e.target.reset();
         // e.detail.target.innerHTML = e.detail.xhr.response;
-    });
+    });*/
 </script>
 </body>
 </html>
